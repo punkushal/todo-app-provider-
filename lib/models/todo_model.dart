@@ -1,5 +1,5 @@
 class TodoModel {
-  final int id;
+  final String id;
   final String title;
   final String desc;
   final bool isCompleted;
