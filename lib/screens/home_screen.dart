@@ -12,6 +12,15 @@ class HomeScreen extends StatelessWidget {
   void onAddingTodo(BuildContext context) {
     if (formkey.currentState!.validate()) {
       log('you added todo succesfully');
+
+      //To display toast message when todo is successfully added
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Successfully created your todo'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.green,
+        ),
+      );
       Navigator.pop(context);
     }
   }
