@@ -1,6 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app_provider/models/todo_model.dart';
+import 'package:todo_app_provider/providers/todo_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -10,9 +11,17 @@ class HomeScreen extends StatelessWidget {
   final formkey = GlobalKey<FormState>();
 
   void onAddingTodo(BuildContext context) {
-    if (formkey.currentState!.validate()) {
-      log('you added todo succesfully');
+    //We get our actual defined provider which is in => todo_provider.dart
+    final provider = Provider.of<TodoProvider>(context, listen: false);
+    //todomodel variable to store todo
+    final todo = TodoModel(
+      id: DateTime.now().toString(),
+      title: titleController.text.trim(),
+      desc: descController.text.trim(),
+    );
 
+    if (formkey.currentState!.validate()) {
+      provider.addTodo(todo);
       //To display toast message when todo is successfully added
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -107,8 +116,29 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //We get our actual defined provider which is in => todo_provider.dart
+    final provider = Provider.of<TodoProvider>(context);
+    Widget content = Center(
+      child: Text(
+        'No task added yet!!',
+        style: TextStyle(fontSize: 26, color: Colors.grey),
+      ),
+    );
     return Scaffold(
       appBar: AppBar(title: Text('Todos')),
+      body: provider.allTodos.isEmpty
+          ? content
+          : Consumer<TodoProvider>(
+              builder: (context, provider, child) {
+                return ListView.builder(
+                  itemCount: provider.allTodos.length,
+                  itemBuilder: (context, index) {
+                    final todo = provider.allTodos[index];
+                    return Text(todo.title);
+                  },
+                );
+              },
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showAddPop(context);
