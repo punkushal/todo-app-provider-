@@ -27,4 +27,11 @@ class TodoProvider extends ChangeNotifier {
     _allTodos.removeAt(index);
     notifyListeners();
   }
+
+  //To update existed todo
+  void updateTodo(int index, TodoModel newTodo) {
+    _allTodos.removeAt(index);
+    _allTodos.insert(index, newTodo);
+    notifyListeners();
+  }
 }
