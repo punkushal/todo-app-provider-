@@ -18,4 +18,13 @@ class TodoProvider extends ChangeNotifier {
     log('After adding new todo $_allTodos');
     notifyListeners();
   }
+
+  //To delete existed todo
+  void deleteTodo(int index) {
+    //jun todo delete garnu parne ho tesko index bata tyo todo lai list batah euta
+    //single todo vanne variable mah rakhe
+    // final todo = _allTodos[index]; // index = 2, _allTodos[2] => sleepa =>todo
+    _allTodos.removeAt(index);
+    notifyListeners();
+  }
 }
