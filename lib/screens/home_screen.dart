@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app_provider/models/todo_model.dart';
 import 'package:todo_app_provider/providers/todo_provider.dart';
+import 'package:todo_app_provider/screens/details_screen.dart';
+import 'package:todo_app_provider/widgets/custom_text_field.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -46,38 +48,13 @@ class HomeScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               spacing: 14,
               children: [
-                TextFormField(
+                CustomTextField(
                   controller: titleController,
-                  decoration: InputDecoration(
-                    labelText: 'Title',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty || value == "") {
-                      return "Please enter the title";
-                    } else if (value.length < 4) {
-                      return "Please enter title length greater than 4";
-                    }
-                    return null;
-                  },
+                  labelText: 'Title',
                 ),
-                TextFormField(
+                CustomTextField(
                   controller: descController,
-                  maxLines: 2,
-                  decoration: InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty || value == "") {
-                      return "Please enter the description";
-                    }
-                    return null;
-                  },
+                  labelText: 'Description',
                 ),
                 SizedBox(height: 6),
 
@@ -134,7 +111,33 @@ class HomeScreen extends StatelessWidget {
                   itemCount: provider.allTodos.length,
                   itemBuilder: (context, index) {
                     final todo = provider.allTodos[index];
-                    return Text(todo.title);
+                    return ListTile(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (ctx) =>
+                                DetailsScreen(todo: todo, index: index),
+                          ),
+                        );
+                      },
+                      title: Text(todo.title, style: TextStyle(fontSize: 18)),
+                      subtitle: Text(todo.desc),
+                      trailing: IconButton(
+                        onPressed: () {
+                          provider.deleteTodo(index);
+                          //To display toast message when todo is successfully deleted
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Successfully deleted your todo'),
+                              duration: Duration(seconds: 2),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        },
+                        icon: Icon(Icons.delete),
+                      ),
+                    );
                   },
                 );
               },
